@@ -73,7 +73,7 @@ export default {
   },
   methods: {
     debounceSearch: debounce(function(text) {
-      if (!text) this.fetchBrowsedItems(this.$route.params.alphabet);
+      if (!text) return;
       this.search = text;
       this.fetchSearchedItem.call(this, text);
     }, 1000),
