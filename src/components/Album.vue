@@ -3,8 +3,25 @@
     <v-layout row>
       <v-flex xs12>
         <img :src="transformArtistBannerImage" :alt="artist.name">
+         <h3 class="banner">{{artist.name}}</h3>
       </v-flex>
     </v-layout>
+    <v-layout row>
+      <v-flex xs12>
+<!-- Breadcrumbs here -->
+    <v-breadcrumbs large="true">
+      <v-icon slot="divider">chevron_right</v-icon>
+      <v-breadcrumbs-item
+        v-for="item in breadcrumbs"
+        :key="item.text"
+        :href="item.link"
+        :disabled="item.disabled">
+        {{ item.text }}
+      </v-breadcrumbs-item>
+    </v-breadcrumbs>
+      </v-flex>
+    </v-layout>
+
     <v-container>
       <v-layout row>
         <v-flex xs2>
@@ -31,6 +48,7 @@ export default {
     return {
       artist: {},
       albums: [],
+      items: [],
       cl,
       noAlbums: false
     };
@@ -39,15 +57,35 @@ export default {
     this.fetchAlbums(this.$route.params.artistId);
   },
   computed: {
+    breadcrumbs (){
+
+     return  [
+          {
+            text: "Search",
+            link: '/browse/a',
+            disabled: false
+          },
+          {
+            text: this.artist.name,
+            link: this.$route.path,
+            disabled: false
+          }
+          
+        ]
+
+
+    },
     transformArtistAvatarImage() {
       return this.cl.url(this.artist.image, {
         width: 200,
         height: 200,
-        gravity: 'face',
-        crop: 'crop',
+        gravity: 'auto:body',
+        crop: 'fill',
         fetchFormat: 'auto',
         quality: 'auto',
-        type: 'fetch'
+        radius: '50:0:50:0',
+        type: 'fetch',
+        format:'png'
       });
     },
     transformArtistBannerImage() {
@@ -84,8 +122,17 @@ export default {
 </script>
 
 <style>
+.banner {
+    position: absolute;
+    font-family: Arial;
+    top: 80px;
+    left: 300px;
+    font-size: 72px;
+    color: #231F20;
+    
+}
 .album-artist img {
-  border-radius: 100%;
+  /*border-radius: 100%;*/
   width: 200px;
   margin: auto;
   display: block;
