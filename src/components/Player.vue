@@ -18,12 +18,11 @@
       </v-flex>
       <v-flex xs1/>
       <v-flex xs2>
-        <social-sharing url="https://vuejs.org/"
-                      title="The Progressive JavaScript Framework"
+        <social-sharing :url="initial.src"
+                      :title="initial.title"
                       description="Intuitive, Fast and Composable MVVM for building interactive interfaces."
                       quote="Vue is a progressive framework for building user interfaces."
-                      hashtags="vuejs,javascript,framework"
-                      twitter-user="vuejs"
+                      hashtags="cloudinary,vuejs,music"
                       inline-template>
           <div>
             <network network="twitter">
