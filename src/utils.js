@@ -24,5 +24,6 @@ export const fetchFilteredItems = async function (
 }
 
 export const cl = cloudinary.Cloudinary.new({
-  cloud_name: 'christekh'
+  cloud_name: 'christekh',
+  secure: true
 })

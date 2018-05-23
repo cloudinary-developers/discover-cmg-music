@@ -10,7 +10,7 @@
         <v-flex xs2>
           <div class="album-artist">
             <img :src="transformArtistAvatarImage" :alt="artist.name">
-            <h3>{{artist.name}}</h3>
+            <h3 class="banner">{{artist.name}}</h3>
           </div>
         </v-flex>
         <v-flex xs1/>
@@ -93,5 +93,11 @@ export default {
 .album-artist h3 {
   text-align: center;
   margin-top: 10px;
+}
+.banner {
+   position: absolute;
+   top: 80px;
+   left: 350px;
+   font-size: 64px;  
 }
 </style>
