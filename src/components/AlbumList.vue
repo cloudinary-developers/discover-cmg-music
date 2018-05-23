@@ -43,7 +43,8 @@ export default {
         crop: 'pad',
         // aspectRatio: '16:9',
         background:'auto:predominant',
-        effect:"art:red_rock",
+        //background: 'blurred:10',
+     //   effect:"art:red_rock",
         fetchFormat: 'auto',
         quality: 'auto',
         type: 'fetch'

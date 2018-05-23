@@ -1,13 +1,18 @@
 <template>
-  <div>
-    <v-layout row>
+  <div class="container-a">
+        <!-- <v-parallax :src="parallaxImage" height="150"></v-parallax> -->
+       <v-layout row>
       <v-flex xs12>
         <img :src="transformArtistBannerImage" :alt="artist.name">
          <h3 class="banner">{{artist.name}}</h3>
       </v-flex>
     </v-layout>
-    <v-layout row>
-      <v-flex xs12>
+
+
+
+
+ <v-layout row>
+       <v-flex xs12>
 <!-- Breadcrumbs here -->
     <v-breadcrumbs large="true">
       <v-icon slot="divider">chevron_right</v-icon>
@@ -21,12 +26,15 @@
     </v-breadcrumbs>
       </v-flex>
     </v-layout>
-
     <v-container>
+        
+
       <v-layout row>
         <v-flex xs2>
           <div class="album-artist">
+      
             <img :src="transformArtistAvatarImage" :alt="artist.name">
+            
             <h3>{{artist.name}}</h3>
           </div>
         </v-flex>
@@ -36,8 +44,10 @@
           <album-list v-else :albums="albums" :cl="cl"></album-list>
         </v-flex>
       </v-layout>
+      
     </v-container>
   </div>
+
 </template>
 
 <script>
@@ -49,16 +59,18 @@ export default {
       artist: {},
       albums: [],
       items: [],
+      parallaxImage:'',
       cl,
       noAlbums: false
     };
   },
   created() {
     this.fetchAlbums(this.$route.params.artistId);
+    
   },
   computed: {
     breadcrumbs (){
-
+      this.parallaxImage = this.transformArtistBannerImage;
      return  [
           {
             text: "Search",
@@ -89,16 +101,26 @@ export default {
       });
     },
     transformArtistBannerImage() {
-      return this.cl.url(this.artist.image, {
-        width: 1800,
+      
+      //verlays/inverted-wave.png
+      let encoded = encodeURI('https://res.cloudinary.com/capitol-music-group/image/upload/w_1140,h_150,a_180/v1526912791/overlays/inverted-wave.png');
+
+      let url =  this.artist.image;
+      return this.cl.url(url, {
+        width: '1400',
         height: 150,
         gravity: 'west',
         crop: 'lpad',
         aspectRatio: '16:9',
         background: 'auto:predominant',
+        radius: '0:0:149:0',
+        //predominant
+        // effect:'gradient_fade:symmetric_pad:0.1',
+        // x:0.2,
         fetchFormat: 'auto',
+        format:'png',
         quality: 'auto',
-        type: 'fetch'
+        type: 'fetch',
       });
     }
   },
