@@ -14,7 +14,7 @@
  <v-layout row>
        <v-flex xs12>
 <!-- Breadcrumbs here -->
-    <v-breadcrumbs large="true">
+    <v-breadcrumbs large>
       <v-icon slot="divider">chevron_right</v-icon>
       <v-breadcrumbs-item
         v-for="item in breadcrumbs"
@@ -101,7 +101,7 @@ export default {
     transformArtistBannerImage() {
       
       //verlays/inverted-wave.png
-      let encoded = encodeURI('https://res.cloudinary.com/capitol-music-group/image/upload/w_1140,h_150,a_180/v1526912791/overlays/inverted-wave.png');
+      // let encoded = encodeURI('https://res.cloudinary.com/capitol-music-group/image/upload/w_1140,h_150,a_180/v1526912791/overlays/inverted-wave.png');
 
       let url =  this.artist.image;
       return this.cl.url(url, {
@@ -132,7 +132,6 @@ export default {
         return;
       }
       this.artist = this.albums[0].artist;
-      console.log(this.albums);
     }
   },
   components: {
@@ -142,15 +141,10 @@ export default {
 </script>
 
 <style>
-.banner {
-    position: absolute;
-    top: 80px;
-    left: 300px;
-    font-size: 72px;
-    color: #231F20;    
+.album-artist {
+  position: relative;
 }
 .album-artist img {
-  /*border-radius: 100%;*/
   width: 200px;
   margin: auto;
   display: block;
@@ -158,5 +152,12 @@ export default {
 .album-artist h3 {
   text-align: center;
   margin-top: 10px;
+}
+.banner {
+    position: absolute;
+    top: 80px;
+    left: 300px;
+    font-size: 72px;
+    color: #231F20;    
 }
 </style>
