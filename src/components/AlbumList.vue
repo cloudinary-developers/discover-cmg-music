@@ -2,7 +2,7 @@
   <v-container fluid grid-list-md>
     <v-layout row wrap>
       <v-flex xs6 v-for="album in albums" :key="album.id">
-        <a @click="goTo($router, `/player/${album.id}/${album.title}`)">
+        <a @click="goTo($router, `/player/${album.id}/${album.title.replace('/', '-').replace(' ', '-').toLowerCase()}`)">
         <v-card>
           <v-card-media
             :src="transformArtistBannerImage(album.image)"
@@ -18,7 +18,6 @@
           </v-card-media>
           <v-card-actions>
             <span class="headline white--text" v-text="album.title"></span>
-           <!--  <v-btn flat @click="goTo($router, `/player/${album.id}/${album.title}`)">Tracks</v-btn> -->
           </v-card-actions>
         </v-card>
       </a>
@@ -54,3 +53,8 @@ export default {
 };
 </script>
 
+<style>
+.card__media__content {
+  height: 200px;
+}
+</style>

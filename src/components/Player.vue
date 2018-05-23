@@ -3,7 +3,7 @@
     <v-layout row>
       <v-flex xs12>
 <!-- Breadcrumbs here -->
-    <v-breadcrumbs large="true">
+    <v-breadcrumbs large>
       <v-icon slot="divider">chevron_right</v-icon>
       <v-breadcrumbs-item
         v-for="item in breadcrumbs"
@@ -20,6 +20,7 @@
         <div class="album-artist">
           <img :src="transformAlbumAvatarImage" :alt="album.title">
           <h3>{{album.title}}</h3>
+          <rise-loader :loading="loading" color="#fff"></rise-loader>
         </div>
       </v-flex>
       <v-flex xs1/>
@@ -29,7 +30,9 @@
           :music="initial"
           :list="tracks"
           float
+          v-if="!loading"
         />
+        <rise-loader :loading="loading" color="#fff"></rise-loader>
       </v-flex>
       <v-flex xs1/>
       <v-flex xs2>
@@ -52,6 +55,7 @@
 
 <script>
 import Aplayer from 'vue-aplayer';
+import RiseLoader from 'vue-spinner/src/RiseLoader';
 import { API_BASE_URI, cl } from '../utils';
 export default {
   data() {
@@ -62,6 +66,7 @@ export default {
       originalTracks: [],
       cl,
       noTracks: false,
+      loading: false,
       initial: {
         src: '/',
         artist: '',
@@ -76,7 +81,8 @@ export default {
   },
   computed: {
     breadcrumbs (){
-      console.log(this.album, this.album.artist, this.$route);
+      console.table(this.album);
+      // console.log(this.album, this.artist, this.$route);
       let artistName =  this.artist.name;
       let artistLink = '../../artist/' + this.artist.id + '/' + this.artist.name;
 
@@ -84,7 +90,7 @@ export default {
      return [
           {
             text: "Search",
-            link: '/browse/a',
+            link: '/browse/a', // Search or Browse
             disabled: false
           },
           {
@@ -143,6 +149,7 @@ export default {
 
     },
     fetchTracks: async function(albumId) {
+      this.loading = true;
       const response = await fetch(`${API_BASE_URI}/tracks/${albumId}`);
       const data = await response.json();
       this.originalTracks = data.tracks.track;
@@ -151,10 +158,11 @@ export default {
         this.noTracks = true;
         return;
       }
-      this.album = this.originalTracks[0].release;
-      this.artist = this.originalTracks[0].artist;
+      this.album = this.tracks[0].albumInfo;
+      this.artist = this.tracks[0].artistInfo;
       this.initial = this.tracks[0];
-      console.log('>>>>> ',data);
+      this.loading = false;
+      console.log('>>>>> ',this.tracks);
     },
     transformTracks(tracks) {
       return tracks.map(track => {
@@ -163,15 +171,17 @@ export default {
           artist: track.artist.name,
           title: track.title,
           pic: track.release.image,
-          theme: 'pic'
+          theme: 'pic',
+          artistInfo: track.artist,
+          albumInfo: track.release
         };
         return newTrack;
       });
     }
   },
   components: {
-    Aplayer
-    // AlbumList
+    Aplayer,
+    RiseLoader
   }
 };
 </script>

@@ -3,7 +3,7 @@
         <!-- <v-parallax :src="parallaxImage" height="150"></v-parallax> -->
        <v-layout row>
       <v-flex xs12>
-        <img :src="transformArtistBannerImage" :alt="artist.name">
+        <img class="banner-image" :src="transformArtistBannerImage" :alt="artist.name">
          <h3 class="banner">{{artist.name}}</h3>
       </v-flex>
     </v-layout>
@@ -33,13 +33,14 @@
         <v-flex xs2>
           <div class="album-artist">
             <img :src="transformArtistAvatarImage" :alt="artist.name">
-            <h3 class="banner">{{artist.name}}</h3>
+            <h3>{{artist.name}}</h3>
           </div>
         </v-flex>
         <v-flex xs1/>
         <v-flex xs9>
           <h3 v-if="noAlbums">No albums</h3>
           <album-list v-else :albums="albums" :cl="cl"></album-list>
+          <rise-loader :loading="loading" color="#fff"></rise-loader>
         </v-flex>
       </v-layout>
       
@@ -49,6 +50,7 @@
 </template>
 
 <script>
+import RiseLoader from 'vue-spinner/src/RiseLoader';
 import AlbumList from './AlbumList'
 import { API_BASE_URI, cl } from '../utils';
 export default {
@@ -59,7 +61,8 @@ export default {
       items: [],
       parallaxImage:'',
       cl,
-      noAlbums: false
+      noAlbums: false,
+      loading: false
     };
   },
   created() {
@@ -124,6 +127,7 @@ export default {
   },
   methods: {
     fetchAlbums: async function(artistId) {
+      this.loading = true;
       const response = await fetch(`${API_BASE_URI}/releases/${artistId}`);
       const data = await response.json();
       this.albums = data.releases.release;
@@ -132,10 +136,12 @@ export default {
         return;
       }
       this.artist = this.albums[0].artist;
+      this.loading = false;
     }
   },
   components: {
-    AlbumList
+    AlbumList,
+    RiseLoader
   }
 };
 </script>
@@ -146,6 +152,7 @@ export default {
 }
 .album-artist img {
   width: 200px;
+  height: 200px;
   margin: auto;
   display: block;
 }
@@ -159,5 +166,9 @@ export default {
     left: 300px;
     font-size: 72px;
     color: #231F20;    
+}
+.banner-image {
+  height: 150px !important;
+  display: block !important;
 }
 </style>

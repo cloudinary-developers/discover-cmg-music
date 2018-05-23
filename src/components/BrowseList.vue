@@ -1,9 +1,9 @@
 <template>
   <div>
     <v-list two-line subheader>
-      <v-list-tile v-for="item in transformedItems" :key="item.id" avatar @click="goTo($router,  `/artist/${item.id}/${item.name}`)">
+      <v-list-tile v-for="item in transformedItems" :key="item.id" avatar @click="goTo($router,  `/artist/${item.id}/${item.name.replace('/', '-').replace(' ', '-').toLowerCase()}`)">
         <v-list-tile-avatar>
-          <img :src="item.image">
+          <img :src="item.image.replace('300.jpg', '50.jpg')">
         </v-list-tile-avatar>
         <v-list-tile-content>
           <v-list-tile-title>{{ item.name }}</v-list-tile-title>
