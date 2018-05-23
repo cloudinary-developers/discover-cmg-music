@@ -1,6 +1,21 @@
 <template>
   <v-container>
     <v-layout row>
+      <v-flex xs12>
+<!-- Breadcrumbs here -->
+    <v-breadcrumbs large="true">
+      <v-icon slot="divider">chevron_right</v-icon>
+      <v-breadcrumbs-item
+        v-for="item in breadcrumbs"
+        :href="item.link"
+        :key="item.text"
+        :disabled="item.disabled">
+        {{ item.text }}
+      </v-breadcrumbs-item>
+    </v-breadcrumbs>
+      </v-flex>
+    </v-layout>
+    <v-layout row>
       <v-flex xs3>
         <div class="album-artist">
           <img :src="transformAlbumAvatarImage" :alt="album.title">
@@ -43,6 +58,7 @@ export default {
     return {
       album: {},
       tracks: [],
+      artist: {},
       originalTracks: [],
       cl,
       noTracks: false,
@@ -59,12 +75,42 @@ export default {
     this.fetchTracks(this.$route.params.albumId);
   },
   computed: {
+    breadcrumbs (){
+      console.log(this.album, this.album.artist, this.$route);
+      let artistName =  this.artist.name;
+      let artistLink = '../../artist/' + this.artist.id + '/' + this.artist.name;
+
+     // Album
+     return [
+          {
+            text: "Search",
+            link: '/browse/a',
+            disabled: false
+          },
+          {
+            text: artistName,
+            link: artistLink,
+            disabled: false
+          },
+          {
+            text: this.album.title,
+            link: this.$route.path,
+            disabled: false
+          },
+          {
+            text: this.initial.title,
+            link: this.$route.path,
+            disabled: false
+          }
+        ]
+
+    },
     transformAlbumAvatarImage() {
       return this.cl.url(this.album.image, {
         width: 200,
         height: 200,
-        gravity: 'face',
-        crop: 'crop',
+        gravity: 'auto',
+        crop: 'fill',
         fetchFormat: 'auto',
         quality: 'auto',
         type: 'fetch'
@@ -85,6 +131,17 @@ export default {
     }
   },
   methods: {
+    updateBreadcrumbs: function(){
+
+      this.breadcrumbs.pop();
+
+      this.breadcrumbs.push({
+            text: 'Song Name Here', //selected track
+            link: this.$route.path,
+            disabled: true
+          });
+
+    },
     fetchTracks: async function(albumId) {
       const response = await fetch(`${API_BASE_URI}/tracks/${albumId}`);
       const data = await response.json();
@@ -95,7 +152,9 @@ export default {
         return;
       }
       this.album = this.originalTracks[0].release;
+      this.artist = this.originalTracks[0].artist;
       this.initial = this.tracks[0];
+      console.log('>>>>> ',data);
     },
     transformTracks(tracks) {
       return tracks.map(track => {

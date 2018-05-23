@@ -62,7 +62,7 @@ export default {
       miniVariant: true,
       right: true,
       rightDrawer: false,
-      title: 'Vuesic',
+      title: 'Discover Music',
     };
   },
   methods: {
