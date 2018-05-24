@@ -83,36 +83,36 @@ export default {
     this.fetchTracks(this.$route.params.albumId);
   },
   computed: {
-    breadcrumbs (){
+    breadcrumbs() {
       // console.table(this.album);
       // console.log(this.album, this.artist, this.$route);
-      let artistName =  this.artist.name;
-      let artistLink = '../../artist/' + this.artist.id + '/' + this.artist.name;
+      let artistName = this.artist.name;
+      let artistLink =
+        '../../artist/' + this.artist.id + '/' + this.artist.name;
 
-     // Album
-     return [
-          {
-            text: "Search",
-            link: '/browse/a', // Search or Browse
-            disabled: false
-          },
-          {
-            text: artistName,
-            link: artistLink,
-            disabled: false
-          },
-          {
-            text: this.album.title,
-            link: this.$route.path,
-            disabled: false
-          },
-          {
-            text: this.initial.title,
-            link: this.$route.path,
-            disabled: false
-          }
-        ]
-
+      // Album
+      return [
+        {
+          text: 'Search',
+          link: '/browse/a', // Search or Browse
+          disabled: false
+        },
+        {
+          text: artistName,
+          link: artistLink,
+          disabled: false
+        },
+        {
+          text: this.album.title,
+          link: this.$route.path,
+          disabled: false
+        },
+        {
+          text: this.initial.title,
+          link: this.$route.path,
+          disabled: false
+        }
+      ];
     },
     transformAlbumAvatarImage() {
       return this.cl.url(this.album.image, {
@@ -140,16 +140,14 @@ export default {
     }
   },
   methods: {
-    updateBreadcrumbs: function(){
-
+    updateBreadcrumbs: function() {
       this.breadcrumbs.pop();
 
       this.breadcrumbs.push({
-            text: 'Song Name Here', //selected track
-            link: this.$route.path,
-            disabled: true
-          });
-
+        text: 'Song Name Here', //selected track
+        link: this.$route.path,
+        disabled: true
+      });
     },
     fetchTracks: async function(albumId) {
       this.loading = true;
@@ -164,9 +162,17 @@ export default {
       this.album = this.tracks[0].albumInfo;
       this.artist = this.tracks[0].artistInfo;
       const trackId = parseInt(this.$route.params.trackId, 10);
-      trackId === 0 && goTo(this.$router, `/player/${this.album.id}/${formatSlug(this.album.title)}/track/${this.originalTracks[0].id}`)
-      console.log(this.pickTrack(trackId))
-      this.initial = trackId > 0 ? this.transformTrack(this.pickTrack(trackId)) : this.tracks[0];
+      trackId === 0 &&
+        goTo(
+          this.$router,
+          `/player/${this.album.id}/${formatSlug(this.album.title)}/track/${
+            this.originalTracks[0].id
+          }`
+        );
+      this.initial =
+        trackId > 0
+          ? this.transformTrack(this.pickTrack(trackId))
+          : this.tracks[0];
       this.autoPlay = true;
       this.loading = false;
       // console.log('>>>>> ',this.tracks);
@@ -177,24 +183,27 @@ export default {
     transformTrack(track) {
       // console.log(track)
       const newTrack = {
-          src: `${API_BASE_URI}/song/${track.id}/stream`,
-          artist: track.artist.name,
-          title: track.title,
-          pic: track.release.image,
-          theme: 'pic',
-          id: track.id,
-          artistInfo: track.artist,
-          albumInfo: track.release
-        };
-        return newTrack;
+        src: `${API_BASE_URI}/song/${track.id}/stream`,
+        artist: track.artist.name,
+        title: track.title,
+        pic: track.release.image.replace('http', 'https'),
+        theme: 'pic',
+        id: track.id,
+        artistInfo: track.artist,
+        albumInfo: track.release
+      };
+      return newTrack;
     },
     isPlayed(e) {
       const newTrackId = e.srcElement.currentSrc.split('/')[5];
-      goTo(this.$router, `/player/${this.album.id}/${formatSlug(this.album.title)}/track/${newTrackId}`)
-      console.log(newTrackId)
+      goTo(
+        this.$router,
+        `/player/${this.album.id}/${formatSlug(
+          this.album.title
+        )}/track/${newTrackId}`
+      );
     },
     pickTrack(id) {
-      console.log(this.originalTracks)
       return this.originalTracks.find(track => track.id === id.toString());
     }
   },
@@ -210,7 +219,7 @@ export default {
   color: #303030 !important;
 }
 .aplayer-list ol li:hover {
-    color: #303030 !important;
+  color: #303030 !important;
 }
 .aplayer-list-light {
   color: #303030 !important;

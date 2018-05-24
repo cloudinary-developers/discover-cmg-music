@@ -5,7 +5,7 @@
         <a @click="goTo($router, `/player/${album.id}/${formatSlug(album.title)}/track/0`)">
         <v-card>
           <v-card-media
-            :src="transformArtistBannerImage(album.image)"
+            :src="transformArtistBannerImage(album.image.replace('http', 'https'))"
             height="200px"
           >
             <v-container fill-height fluid>
