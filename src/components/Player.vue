@@ -46,7 +46,7 @@
                       inline-template>
           <div>
             <network network="twitter">
-              <img class="share--twitter" src="http://res.cloudinary.com/christekh/image/upload/c_crop,h_200,w_192/v1526979659/white-twitter-logo-transparent-background-9-300x200_atjr4d.png" alt="">
+              <img class="share--twitter" src="https://res.cloudinary.com/christekh/image/upload/c_crop,h_200,w_192/v1526979659/white-twitter-logo-transparent-background-9-300x200_atjr4d.png" alt="">
             </network>
           </div>
         </social-sharing>
