@@ -17,7 +17,7 @@ const routes = [{
     component: Album
   },
   {
-    path: '/player/:albumId/:title',
+    path: '/player/:albumId/:title/track/:trackId',
     component: Player
   },
 ]

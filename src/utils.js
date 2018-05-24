@@ -27,3 +27,5 @@ export const cl = cloudinary.Cloudinary.new({
   cloud_name: 'christekh',
   secure: true
 })
+
+export const formatSlug = (str) => str.replace(/\//g, '-').replace(/ /g, '-').replace(/:/g,'').toLowerCase()

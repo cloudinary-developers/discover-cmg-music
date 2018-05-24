@@ -27,10 +27,12 @@
       <v-flex xs6>
         <h3 v-if="noTracks">No Tracks</h3>
         <aplayer
+          :autoplay="autoPlay"
           :music="initial"
           :list="tracks"
           float
           v-if="!loading"
+          @playing="isPlayed($event)"
         />
         <rise-loader :loading="loading" color="#fff"></rise-loader>
       </v-flex>
@@ -56,7 +58,7 @@
 <script>
 import Aplayer from 'vue-aplayer';
 import RiseLoader from 'vue-spinner/src/RiseLoader';
-import { API_BASE_URI, cl } from '../utils';
+import { API_BASE_URI, cl, goTo, formatSlug } from '../utils';
 export default {
   data() {
     return {
@@ -64,6 +66,7 @@ export default {
       tracks: [],
       artist: {},
       originalTracks: [],
+      autoPlay: false,
       cl,
       noTracks: false,
       loading: false,
@@ -81,7 +84,7 @@ export default {
   },
   computed: {
     breadcrumbs (){
-      console.table(this.album);
+      // console.table(this.album);
       // console.log(this.album, this.artist, this.$route);
       let artistName =  this.artist.name;
       let artistLink = '../../artist/' + this.artist.id + '/' + this.artist.name;
@@ -160,23 +163,39 @@ export default {
       }
       this.album = this.tracks[0].albumInfo;
       this.artist = this.tracks[0].artistInfo;
-      this.initial = this.tracks[0];
+      const trackId = parseInt(this.$route.params.trackId, 10);
+      trackId === 0 && goTo(this.$router, `/player/${this.album.id}/${formatSlug(this.album.title)}/track/${this.originalTracks[0].id}`)
+      console.log(this.pickTrack(trackId))
+      this.initial = trackId > 0 ? this.transformTrack(this.pickTrack(trackId)) : this.tracks[0];
+      this.autoPlay = true;
       this.loading = false;
-      console.log('>>>>> ',this.tracks);
+      // console.log('>>>>> ',this.tracks);
     },
     transformTracks(tracks) {
-      return tracks.map(track => {
-        const newTrack = {
+      return tracks.map(track => this.transformTrack(track));
+    },
+    transformTrack(track) {
+      // console.log(track)
+      const newTrack = {
           src: `${API_BASE_URI}/song/${track.id}/stream`,
           artist: track.artist.name,
           title: track.title,
           pic: track.release.image,
           theme: 'pic',
+          id: track.id,
           artistInfo: track.artist,
           albumInfo: track.release
         };
         return newTrack;
-      });
+    },
+    isPlayed(e) {
+      const newTrackId = e.srcElement.currentSrc.split('/')[5];
+      goTo(this.$router, `/player/${this.album.id}/${formatSlug(this.album.title)}/track/${newTrackId}`)
+      console.log(newTrackId)
+    },
+    pickTrack(id) {
+      console.log(this.originalTracks)
+      return this.originalTracks.find(track => track.id === id.toString());
     }
   },
   components: {
