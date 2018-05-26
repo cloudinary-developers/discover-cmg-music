@@ -43,7 +43,7 @@ export default {
   methods: {
     
     navigateTo(item){
-      return goTo(this.$router, `/artist/${item.id}/${normalizeTitle(item.name)}`)
+      return goTo(this.$router, `/artist/${item.id}/${normalizeTitle(item.name)}`,item)
     }
   }
 };

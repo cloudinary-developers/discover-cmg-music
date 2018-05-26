@@ -69,6 +69,7 @@ export default {
     }
   },
   created() {
+    console.log('Route:',this.$route);
     this.fetchBrowsedItems(this.$route.params.alphabet);
   },
   methods: {

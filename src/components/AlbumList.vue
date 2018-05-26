@@ -2,7 +2,7 @@
   <v-container fluid grid-list-md>
     <v-layout row wrap>
       <v-flex xs6 v-for="album in albums" :key="album.id">
-        <a @click="goTo($router, `/player/${album.id}/${formatSlug(album.title)}/track/0`)">
+        <a @click="navigateTo(album)">
         <v-card>
           <v-card-media
             :src="transformArtistBannerImage(album.image.replace('http', 'https'))"
@@ -27,13 +27,16 @@
 </template>
 
 <script>
-import { goTo, formatSlug } from '../utils';
+import { goTo, formatSlug, normalizeTitle } from '../utils';
 export default {
   data() {
     return { goTo, formatSlug };
   },
   props: ['albums', 'cl'],
   methods: {
+    navigateTo(item){
+      return goTo(this.$router, `/player/${item.id}/${formatSlug(item.title)}/track/0`,item);
+    },
     transformArtistBannerImage(image) {
       return this.cl.url(image, {
         width: 300,

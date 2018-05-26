@@ -58,7 +58,7 @@
 <script>
 import Aplayer from 'vue-aplayer';
 import RiseLoader from 'vue-spinner/src/RiseLoader';
-import { API_BASE_URI, cl, goTo, formatSlug } from '../utils';
+import { API_BASE_URI, cl, goTo, formatSlug, normalizeTitle } from '../utils';
 export default {
   data() {
     return {
@@ -70,6 +70,7 @@ export default {
       cl,
       noTracks: false,
       loading: false,
+      currentTrack: {},
       initial: {
         src: '/',
         artist: '',
@@ -80,7 +81,10 @@ export default {
     };
   },
   created() {
+    console.log('Route:',this.$route);
     this.fetchTracks(this.$route.params.albumId);
+    this.album = this.$route.query.album;
+    console.log(this.album);
   },
   computed: {
     breadcrumbs() {
@@ -98,7 +102,7 @@ export default {
           disabled: false
         },
         {
-          text: artistName,
+          text: this.artist.name,
           link: artistLink,
           disabled: false
         },
@@ -108,7 +112,7 @@ export default {
           disabled: true
         },
         {
-          text: this.initial.title,
+          text: this.currentTrack.title,
           link: this.$route.path,
           disabled: true
         }
@@ -154,6 +158,12 @@ export default {
       const response = await fetch(`${API_BASE_URI}/tracks/${albumId}`);
       const data = await response.json();
       this.originalTracks = data.tracks.track;
+      
+
+      this.currentTrack = data.tracks.track[0] || {};
+
+      console.log('currentTrack initial load:',this.currentTrack);
+
       this.tracks = this.createPlayList(this.originalTracks);
       if (this.tracks.length < 1) {
         this.noTracks = true;
@@ -167,11 +177,11 @@ export default {
           this.$router,
           `/player/${this.album.id}/${formatSlug(this.album.title)}/track/${
             this.originalTracks[0].id
-          }`
+          }`, this.currentTrack
         );
       this.initial =
         trackId > 0
-          ? this.transformTrack(this.pickTrack(trackId))
+          ? this.formatPlayListItem(this.pickTrack(trackId))
           : this.tracks[0];
       this.autoPlay = true;
       this.loading = false;
@@ -194,31 +204,23 @@ export default {
       };
       return newTrack;
     },
-     transformTracks(tracks) {
-      return tracks.map(track => this.transformTrack(track));
-    },
-    transformTrack(track) {
-      // console.log(track)
-      const newTrack = {
-        src: `${API_BASE_URI}/song/${track.id}/stream`,
-        artist: track.artist.name,
-        title: track.title,
-        pic: track.release.image.replace('http', 'https'),
-        theme: 'pic',
-        id: track.id,
-        artistInfo: track.artist,
-        albumInfo: track.release
-      };
-      return newTrack;
-    },
     isPlayed(e) {
+
       const newTrackId = e.srcElement.currentSrc.split('/')[5];
+
+      debugger;
+      this.currentTrack = this.originalTracks.filter(function(item){
+        return  (item.id === newTrackId) ? true : false;
+      })[0]; 
+
+      console.log('currentTrack:', this.currentTrack);
+
       goTo(
         this.$router,
         `/player/${this.album.id}/${formatSlug(
           this.album.title
         )}/track/${newTrackId}`
-      );
+      ,this.currentTrack);
     },
     pickTrack(id) {
       return this.originalTracks.find(track => track.id === id.toString());

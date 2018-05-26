@@ -2,7 +2,32 @@ export const API_BASE_URI = 'https://canadian-music-week.cloudinary.auth0-extend
 export const ALPHABETS = 'abcdefghijklmnopqrstuvwxyz';
 import cloudinary from 'cloudinary-core';
 
-export const goTo = (router, path) => {
+export const goTo = (router, path, data) => {
+     // debugger;
+//let d = (data) ? data : null ; 
+let query = {};
+
+if(router.currentRoute.name === 'browse-alpha'){
+    query = {artist:data};
+}
+
+if(router.currentRoute.name === 'album'){
+    query = {album:data};
+}
+
+if(router.currentRoute.name === 'player'){
+    query = {track:data};
+}
+
+console.log('query', query);
+  router.push({
+    query : query,
+    path
+  })
+}
+
+
+export const goTo_original = (router, path) => {
   router.push({
     path
   })

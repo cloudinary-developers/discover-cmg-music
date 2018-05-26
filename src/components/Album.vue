@@ -66,8 +66,8 @@ export default {
     };
   },
   created() {
+    console.log('Route:',this.$route);
     this.fetchAlbums(this.$route.params.artistId);
-    
   },
   computed: {
     breadcrumbs (){
