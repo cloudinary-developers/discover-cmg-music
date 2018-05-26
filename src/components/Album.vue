@@ -1,7 +1,6 @@
 <template>
   <div class="container-a">
-        <!-- <v-parallax :src="parallaxImage" height="150"></v-parallax> -->
-       <v-layout row>
+       <v-layout row v-if="!noAlbums">
       <v-flex xs12>
         <img class="banner-image" :src="transformArtistBannerImage" :alt="artist.name">
          <h3 class="banner">{{artist.name}}</h3>
@@ -61,6 +60,7 @@ export default {
       items: [],
       parallaxImage:'',
       cl,
+      API_BASE_URI,
       noAlbums: false,
       loading: false
     };
@@ -71,7 +71,6 @@ export default {
   },
   computed: {
     breadcrumbs (){
-      this.parallaxImage = this.transformArtistBannerImage;
      return  [
           {
             text: "Search",
