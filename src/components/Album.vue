@@ -31,16 +31,16 @@
 
       <v-layout row>
         <v-flex xs2>
-          <div class="album-artist">
+          <div class="album-artist" v-if="!noAlbums">
             <img :src="transformArtistAvatarImage" :alt="artist.name">
             <h3>{{artist.name}}</h3>
           </div>
         </v-flex>
         <v-flex xs1/>
         <v-flex xs9>
-          <h3 v-if="noAlbums">No albums</h3>
+          <h3 v-if="noAlbums">No albums available to stream.</h3>
           <album-list v-else :albums="albums" :cl="cl"></album-list>
-          <rise-loader :loading="loading" color="#fff"></rise-loader>
+          <rise-loader :loading="loading" color="#fff" v-if="!noAlbums"></rise-loader>
         </v-flex>
       </v-layout>
       
