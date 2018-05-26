@@ -8,6 +8,17 @@ export const goTo = (router, path) => {
   })
 }
 
+
+
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.replace(new RegExp(search, 'g'), replacement);
+};
+
+export const normalizeTitle = (title) => {
+      return title.replaceAll(' ','-').replaceAll('/','-').toLowerCase();
+}
+
 export const fetchFilteredItems = async function (
   filterType,
   filterTerm,

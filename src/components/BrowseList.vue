@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-list two-line subheader>
-      <v-list-tile v-for="item in transformedItems" :key="item.id" avatar @click="goTo($router,  `/artist/${item.id}/${item.name.replace('/', '-').replace(' ', '-').toLowerCase()}`)">
+      <v-list-tile v-for="item in transformedItems" :key="item.id" avatar @click="navigateTo(item)">
         <v-list-tile-avatar>
           <img :src="item.image.replace('300.jpg', '50.jpg').replace('http', 'https')">
         </v-list-tile-avatar>
@@ -21,13 +21,14 @@
 </template>
 
 <script>
-import {  goTo } from '../utils';
+import {  goTo, normalizeTitle } from '../utils';
 export default {
   name: 'browser-list',
   props: ['items', 'type'],
   data() {
     return {
-      goTo
+      goTo,
+      normalizeTitle
     }
   },
   computed: {
@@ -37,6 +38,12 @@ export default {
       } else {
         return this.items
       }
+    }
+  },
+  methods: {
+    
+    navigateTo(item){
+      return goTo(this.$router, `/artist/${item.id}/${normalizeTitle(item.name)}`)
     }
   }
 };

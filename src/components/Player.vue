@@ -17,7 +17,7 @@
     </v-layout>
     <v-layout row>
       <v-flex xs3>
-        <div class="album-artist">
+        <div class="album-artist" v-if="!noTracks">
           <img :src="transformAlbumAvatarImage" :alt="album.title">
           <h3>{{album.title}}</h3>
           <rise-loader :loading="loading" color="#fff"></rise-loader>
@@ -25,7 +25,7 @@
       </v-flex>
       <v-flex xs1/>
       <v-flex xs6>
-        <h3 v-if="noTracks">No Tracks</h3>
+        <h3 v-if="noTracks">Wow! Something happened, we could not fetch the songs.</h3>
         <aplayer
           :autoplay="autoPlay"
           :music="initial"
@@ -34,10 +34,10 @@
           v-if="!loading"
           @playing="isPlayed($event)"
         />
-        <rise-loader :loading="loading" color="#fff"></rise-loader>
+        <rise-loader :loading="loading" color="#fff" v-if="!noTracks"></rise-loader>
       </v-flex>
       <v-flex xs1/>
-      <v-flex xs2>
+      <v-flex xs2 v-if="!noTracks">
         <social-sharing :url="initial.src"
                       :title="initial.title"
                       description="Intuitive, Fast and Composable MVVM for building interactive interfaces."
@@ -105,12 +105,12 @@ export default {
         {
           text: this.album.title,
           link: this.$route.path,
-          disabled: false
+          disabled: true
         },
         {
           text: this.initial.title,
           link: this.$route.path,
-          disabled: false
+          disabled: true
         }
       ];
     },
@@ -154,7 +154,7 @@ export default {
       const response = await fetch(`${API_BASE_URI}/tracks/${albumId}`);
       const data = await response.json();
       this.originalTracks = data.tracks.track;
-      this.tracks = this.transformTracks(this.originalTracks);
+      this.tracks = this.createPlayList(this.originalTracks);
       if (this.tracks.length < 1) {
         this.noTracks = true;
         return;
@@ -177,7 +177,24 @@ export default {
       this.loading = false;
       // console.log('>>>>> ',this.tracks);
     },
-    transformTracks(tracks) {
+    createPlayList(tracks) {
+      return tracks.map(track => this.formatPlayListItem(track));
+    },
+    formatPlayListItem(track) {
+      // console.log(track)
+      const newTrack = {
+        src: `${API_BASE_URI}/song/${track.id}/stream`,
+        artist: track.artist.name,
+        title: track.title,
+        pic: track.release.image.replace('http', 'https'),
+        theme: 'pic',
+        id: track.id,
+        artistInfo: track.artist,
+        albumInfo: track.release
+      };
+      return newTrack;
+    },
+     transformTracks(tracks) {
       return tracks.map(track => this.transformTrack(track));
     },
     transformTrack(track) {
