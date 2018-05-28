@@ -32,10 +32,12 @@ export default {
   data() {
     return { goTo, formatSlug };
   },
-  props: ['albums', 'cl'],
+  props: ['albums', 'cl','artist'],
   methods: {
-    navigateTo(item){
-      return goTo(this.$router, `/player/${item.id}/${formatSlug(item.title)}/track/0`,item);
+    navigateTo(album){
+    return goTo(this.$router, `/player/${this.artist.id}/${album.id}/0/${normalizeTitle(album.title)}`,album);
+
+      // return goTo(this.$router, `/player/${item.id}/${formatSlug(item.title)}/track/0`,item);
     },
     transformArtistBannerImage(image) {
       return this.cl.url(image, {

@@ -2,9 +2,11 @@ export const API_BASE_URI = 'https://canadian-music-week.cloudinary.auth0-extend
 export const ALPHABETS = 'abcdefghijklmnopqrstuvwxyz';
 import cloudinary from 'cloudinary-core';
 
+
+
 export const goTo = (router, path, data) => {
-     // debugger;
-//let d = (data) ? data : null ; 
+
+
 let query = {};
 
 if(router.currentRoute.name === 'browse-alpha'){
@@ -22,7 +24,8 @@ if(router.currentRoute.name === 'player'){
 console.log('query', query);
   router.push({
     query : query,
-    path
+    data : query,
+    path :path
   })
 }
 
@@ -41,7 +44,7 @@ String.prototype.replaceAll = function(search, replacement) {
 };
 
 export const normalizeTitle = (title) => {
-      return title.replaceAll(' ','-').replaceAll('/','-').toLowerCase();
+      return title.replaceAll(':','-').replaceAll(' ','-').replaceAll('/','-').toUpperCase();
 }
 
 export const fetchFilteredItems = async function (
@@ -65,3 +68,6 @@ export const cl = cloudinary.Cloudinary.new({
 })
 
 export const formatSlug = (str) => str.replace(/\//g, '-').replace(/ /g, '-').replace(/:/g,'').toLowerCase()
+
+
+

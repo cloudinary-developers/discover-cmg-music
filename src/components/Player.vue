@@ -66,6 +66,7 @@ export default {
       tracks: [],
       artist: {},
       originalTracks: [],
+      playlist:[],
       autoPlay: false,
       cl,
       noTracks: false,
@@ -82,17 +83,19 @@ export default {
   },
   created() {
     console.log('Route:',this.$route);
-    this.fetchTracks(this.$route.params.albumId);
-    this.album = this.$route.query.album;
-    console.log(this.album);
+
+    this.fetchTracks(this.$route.params.albumId, this.$route.params.trackId);
+    //this.album = this.$route.query.album;
+   // console.log(this.album);
   },
   computed: {
     breadcrumbs() {
       // console.table(this.album);
       // console.log(this.album, this.artist, this.$route);
-      let artistName = this.artist.name;
+    //normalizeTitle
       let artistLink =
-        '../../artist/' + this.artist.id + '/' + this.artist.name;
+        '/artist/' + this.artist.id + '/' + this.artist.name;
+
 
       // Album
       return [
@@ -109,7 +112,7 @@ export default {
         {
           text: this.album.title,
           link: this.$route.path,
-          disabled: true
+          disabled: false
         },
         {
           text: this.currentTrack.title,
@@ -153,38 +156,85 @@ export default {
         disabled: true
       });
     },
-    fetchTracks: async function(albumId) {
+    fetchTracks: async function(albumId,track_ID) {
+      const trackId = parseInt(track_ID, 10);
+      console.log(albumId,track_ID,trackId);
+ 
       this.loading = true;
       const response = await fetch(`${API_BASE_URI}/tracks/${albumId}`);
       const data = await response.json();
-      this.originalTracks = data.tracks.track;
+
+      console.log(data);
+      this.loading = false;
       
 
-      this.currentTrack = data.tracks.track[0] || {};
+      this.originalTracks = data.tracks.track;
+      this.currentTrack = this.findTrackInList(track_ID);
+
+      this.initial = this.formatPlayListItem(this.currentTrack);
 
       console.log('currentTrack initial load:',this.currentTrack);
 
+      //debugger
+
       this.tracks = this.createPlayList(this.originalTracks);
-      if (this.tracks.length < 1) {
+      this.playlist = this.createPlayList(this.originalTracks);
+
+      this.album = this.tracks[0].albumInfo;
+      this.artist = this.tracks[0].artistInfo;
+      let title = this.artist.name + '>' + this.album.title + '>' + this.currentTrack.title;
+
+        goTo(this.$router,`/player/${this.artist.id}/${this.album.id}/${this.currentTrack.id}/${normalizeTitle(title)}`,this.currentTrack);
+
+      // this.tracks = data.tracks.track;
+
+
+      
+
+
+      //this.currentTrack = (trackId > 0) ? this.formatPlayListItem(pickTrack(trackId)) : 
+
+
+      // this.currentTrack = data.tracks.track[0];
+      
+
+      // this.initial = (trackId > 0)
+        
+      //     ? this.formatPlayListItem(this.pickTrack(trackId))
+      //     : this.tracks[0];
+
+
+      // if(trackId != "0"){
+
+      // }
+
+      
+      
+
+     
+      //       const trackId = parseInt(this.$route.params.trackId, 10);
+
+      // trackId === 0 &&
+
+       // goTo(this.$router,`/player/${this.artist.id}/${this.album.id}/${newTrackId}/${normalizeTitle(title)}`,this.currentTrack);
+
+
+
+        // goTo(
+        //   this.$router,
+        //   `/player/${this.album.id}/${formatSlug(this.album.title)}/track/${
+        //     this.originalTracks[0].id
+        //   }`, this.currentTrack
+        // );
+      //this.src = this.formatPlayListItem(this.currentTrack)  
+      
+      this.autoPlay = true;
+      this.loading = false;
+
+       if (this.tracks.length < 1) {
         this.noTracks = true;
         return;
       }
-      this.album = this.tracks[0].albumInfo;
-      this.artist = this.tracks[0].artistInfo;
-      const trackId = parseInt(this.$route.params.trackId, 10);
-      trackId === 0 &&
-        goTo(
-          this.$router,
-          `/player/${this.album.id}/${formatSlug(this.album.title)}/track/${
-            this.originalTracks[0].id
-          }`, this.currentTrack
-        );
-      this.initial =
-        trackId > 0
-          ? this.formatPlayListItem(this.pickTrack(trackId))
-          : this.tracks[0];
-      this.autoPlay = true;
-      this.loading = false;
       // console.log('>>>>> ',this.tracks);
     },
     createPlayList(tracks) {
@@ -200,27 +250,47 @@ export default {
         theme: 'pic',
         id: track.id,
         artistInfo: track.artist,
-        albumInfo: track.release
+        albumInfo: track.release || {}
       };
       return newTrack;
     },
     isPlayed(e) {
+      const track_ID = e.srcElement.currentSrc.split('/')[5];
 
+      this.currentTrack = this.findTrackInList(track_ID);
+
+      console.log('Selected Track',this.currentTrack.title,this.currentTrack, track_ID);
+
+      let title = this.artist.name + '>' + this.album.title + '>' + this.currentTrack.title;
+
+        goTo(this.$router,`/player/${this.artist.id}/${this.album.id}/${this.currentTrack.id}/${normalizeTitle(title)}`,this.currentTrack);
+
+/*
       const newTrackId = e.srcElement.currentSrc.split('/')[5];
 
-      debugger;
-      this.currentTrack = this.originalTracks.filter(function(item){
-        return  (item.id === newTrackId) ? true : false;
-      })[0]; 
+     // debugger;
+      // this.currentTrack = this.originalTracks.filter(function(item){
+      //   return  (item.id === newTrackId) ? true : false;
+      // })[0]; 
+
+      this.currentTrack = findTrackInList(newTrackId);
 
       console.log('currentTrack:', this.currentTrack);
+//  path: '/player/:artistId/:albumId/:trackId/:title',
 
-      goTo(
-        this.$router,
-        `/player/${this.album.id}/${formatSlug(
-          this.album.title
-        )}/track/${newTrackId}`
-      ,this.currentTrack);
+      let title = this.artist.name + '>' + this.album.title + '>' + this.currentTrack.title;
+
+      goTo(this.$router,`/player/${this.artist.id}/${this.album.id}/${newTrackId}/${normalizeTitle(title)}`,this.currentTrack);
+
+      // OLD goTo(this.$router,`/player/${this.album.id}/${formatSlug(this.album.title)}/track/${newTrackId}`,this.currentTrack);
+
+*/
+    },
+    findTrackInList(id) {
+      if(id === 0 || id ==="0"){
+        return this.originalTracks[0];
+      }
+      return this.originalTracks.find(track => track.id === id.toString());
     },
     pickTrack(id) {
       return this.originalTracks.find(track => track.id === id.toString());

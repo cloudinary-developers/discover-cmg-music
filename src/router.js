@@ -17,13 +17,13 @@ const routes = [{
   {
     name: 'album',
     path: '/artist/:artistId/:name',
-    component: Album
+    component: Album,
   },
   {
-    name: 'player',
-    path: '/player/:albumId/:title/track/:trackId',
+    name: 'playerA',
+    path: '/player/:artistId/:albumId/:trackId/:title',
     component: Player
-  },
+  }
 ]
 
 const router = new VueRouter({

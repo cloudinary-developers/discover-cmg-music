@@ -38,7 +38,7 @@
         <v-flex xs1/>
         <v-flex xs9>
           <h3 v-if="noAlbums">No albums available to stream.</h3>
-          <album-list v-else :albums="albums" :cl="cl"></album-list>
+          <album-list v-else :albums="albums" :cl="cl" :artist="artist"></album-list>
           <rise-loader :loading="loading" color="#fff" v-if="!noAlbums"></rise-loader>
         </v-flex>
       </v-layout>
@@ -112,10 +112,11 @@ export default {
         gravity: 'west',
         crop: 'lpad',
         aspectRatio: '16:9',
-        background: 'auto:predominant',
+        background: 'white',
+        //'auto:predominant',
         radius: '0:0:149:0',
         //predominant
-        // effect:'gradient_fade:symmetric_pad:0.1',
+        effect:'gradient_fade:symmetric_pad:0.05',
         // x:0.2,
         fetchFormat: 'auto',
         format:'png',

@@ -6,29 +6,11 @@
       :key="item.id"
       transition="fade"
       reverse-transition="fade">
-		 <h1 class="display-4">{{item.name}}</h1>
+		 <h1 class="display-3">{{item.name}}</h1>
 		 <img :src="transformCoverImage(item)"  @click="navigateTo(item)">
           	     
       </v-carousel-item>
 	</v-carousel>
-
-    <!-- <v-list two-line subheader>
-      <v-list-tile v-for="item in transformedItems" :key="item.id" avatar @click="navigateTo(item)">
-        <v-list-tile-avatar>
-          <img :src="item.image.replace('300.jpg', '50.jpg').replace('http', 'https')">
-        </v-list-tile-avatar>
-        <v-list-tile-content>
-          <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-          <v-list-tile-sub-title>ARTIST</v-list-tile-sub-title>
-        </v-list-tile-content>
-        <v-list-tile-action>
-          <v-btn icon ripple>
-            <v-icon color="grey lighten-1">info</v-icon>
-          </v-btn>
-        </v-list-tile-action>
-      </v-list-tile>
-    </v-list> -->
-    
   </div>
 </template>
 
