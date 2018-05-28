@@ -98,6 +98,7 @@ export default {
     };
   },
   created() {
+    // eslint-disable-next-line
     console.log('Route:',this.$route);
 
     this.fetchTracks(this.$route.params.albumId, this.$route.params.trackId);
