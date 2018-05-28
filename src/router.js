@@ -7,22 +7,25 @@ import Player from './components/Player'
 const routes = [{
     name: 'browse',
     path: '/',
-    redirect: './browse/a'
+    redirect: './browse/a',
   },
   {
     name: 'browse-alpha',
     path: '/browse/:alphabet',
-    component: Browse
+    components: { default: Browse},
+    props: { default: true }
   },
   {
     name: 'album',
     path: '/artist/:artistId/:name',
-    component: Album,
+    components: { default: Album},
+    props: { default: true }
   },
   {
-    name: 'playerA',
+    name: 'player',
     path: '/player/:artistId/:albumId/:trackId/:title',
-    component: Player
+    components: { default: Player},
+    props: { default: true }
   }
 ]
 

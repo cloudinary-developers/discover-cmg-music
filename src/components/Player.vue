@@ -38,17 +38,32 @@
       </v-flex>
       <v-flex xs1/>
       <v-flex xs2 v-if="!noTracks">
-        <social-sharing :url="initial.src"
-                      :title="initial.title"
-                      description="Intuitive, Fast and Composable MVVM for building interactive interfaces."
-                      quote="Vue is a progressive framework for building user interfaces."
-                      hashtags="cloudinary,vuejs,music"
+        <social-sharing 
+                      :title="this.share.title"
+                      :description="this.share.description"
+                      :quote="this.share.quote"
+                      :hashtags="this.share.hashtags"
+                      :twitter-user="this.share.twitteruser"
+                      :url="this.share.src"
                       inline-template>
-          <div>
+           <v-layout align-center justify-space-around>
             <network network="twitter">
-              <img class="share--twitter" src="https://res.cloudinary.com/christekh/image/upload/c_crop,h_200,w_192/v1526979659/white-twitter-logo-transparent-background-9-300x200_atjr4d.png" alt="">
+              <v-icon>fa fa-twitter</v-icon>
             </network>
-          </div>
+             <!-- <network network="email">
+              <v-icon>fa fa-envelope</v-icon>
+            </network>
+            <network network="linkedin">
+              <v-icon>fa fa-linkedin</v-icon>
+            </network>
+            <network network="whatsapp">
+              <v-icon>fa fa-whatsapp</v-icon>
+            </network>
+            <network network="facebook">
+              <v-icon>fa fa-facebook</v-icon> -->
+            </network>
+
+          </v-layout>
         </social-sharing>
       </v-flex>
     </v-layout>
@@ -62,6 +77,7 @@ import { API_BASE_URI, cl, goTo, formatSlug, normalizeTitle } from '../utils';
 export default {
   data() {
     return {
+      share:{},
       album: {},
       tracks: [],
       artist: {},
@@ -147,15 +163,7 @@ export default {
     }
   },
   methods: {
-    updateBreadcrumbs: function() {
-      this.breadcrumbs.pop();
-
-      this.breadcrumbs.push({
-        text: 'Song Name Here', //selected track
-        link: this.$route.path,
-        disabled: true
-      });
-    },
+    
     fetchTracks: async function(albumId,track_ID) {
       const trackId = parseInt(track_ID, 10);
       console.log(albumId,track_ID,trackId);
@@ -172,6 +180,7 @@ export default {
       this.currentTrack = this.findTrackInList(track_ID);
 
       this.initial = this.formatPlayListItem(this.currentTrack);
+      this.share = this.formatShareItem(this.currentTrack);
 
       console.log('currentTrack initial load:',this.currentTrack);
 
@@ -184,49 +193,7 @@ export default {
       this.artist = this.tracks[0].artistInfo;
       let title = this.artist.name + '>' + this.album.title + '>' + this.currentTrack.title;
 
-        goTo(this.$router,`/player/${this.artist.id}/${this.album.id}/${this.currentTrack.id}/${normalizeTitle(title)}`,this.currentTrack);
-
-      // this.tracks = data.tracks.track;
-
-
-      
-
-
-      //this.currentTrack = (trackId > 0) ? this.formatPlayListItem(pickTrack(trackId)) : 
-
-
-      // this.currentTrack = data.tracks.track[0];
-      
-
-      // this.initial = (trackId > 0)
-        
-      //     ? this.formatPlayListItem(this.pickTrack(trackId))
-      //     : this.tracks[0];
-
-
-      // if(trackId != "0"){
-
-      // }
-
-      
-      
-
-     
-      //       const trackId = parseInt(this.$route.params.trackId, 10);
-
-      // trackId === 0 &&
-
-       // goTo(this.$router,`/player/${this.artist.id}/${this.album.id}/${newTrackId}/${normalizeTitle(title)}`,this.currentTrack);
-
-
-
-        // goTo(
-        //   this.$router,
-        //   `/player/${this.album.id}/${formatSlug(this.album.title)}/track/${
-        //     this.originalTracks[0].id
-        //   }`, this.currentTrack
-        // );
-      //this.src = this.formatPlayListItem(this.currentTrack)  
+        goTo(this.$router,`/player/${this.artist.id}/${this.album.id}/${this.currentTrack.id}/${normalizeTitle(title)}`,this.currentTrack); 
       
       this.autoPlay = true;
       this.loading = false;
@@ -235,10 +202,38 @@ export default {
         this.noTracks = true;
         return;
       }
-      // console.log('>>>>> ',this.tracks);
     },
     createPlayList(tracks) {
       return tracks.map(track => this.formatPlayListItem(track));
+    },
+    createHashTag(text){
+      return text.replace(/\./g, '').replace(/ /g, '');
+    },
+    formatShareItem(track){
+      console.log("share track",track);
+      let title = track.title.split('?')[0];
+      let description =  `${track.artist.name} - ${track.release.title}`;
+      let quote = `${track.artist.name} - ${track.release.title}`;
+
+      /*
+      url="https://vuejs.org/"
+                      title="The Progressive JavaScript Framework"
+                      description="Intuitive, Fast and Composable MVVM for building interactive interfaces."
+                      quote="Vue is a progressive framework for building user interfaces."
+                      hashtags="vuejs,javascript,framework"
+                      twitter-user="vuejs"
+                      */
+
+      const share = {
+        url: `${API_BASE_URI}/song/${track.id}/stream`,
+        title: title,
+        description: description,
+        quote: quote,
+        hashtags: `${this.createHashTag(track.artist.name)},${this.createHashTag(track.release.title)}` ,
+        twitteruser:"cloudinary"
+      };
+      console.log('share:',share);
+      return share;
     },
     formatPlayListItem(track) {
       // console.log(track)
@@ -258,33 +253,15 @@ export default {
       const track_ID = e.srcElement.currentSrc.split('/')[5];
 
       this.currentTrack = this.findTrackInList(track_ID);
+      this.share = this.formatShareItem(this.currentTrack);
+
 
       console.log('Selected Track',this.currentTrack.title,this.currentTrack, track_ID);
 
-      let title = this.artist.name + '>' + this.album.title + '>' + this.currentTrack.title;
+      let title = this.artist.name + '_' + this.album.title + '_' + this.currentTrack.title;
 
         goTo(this.$router,`/player/${this.artist.id}/${this.album.id}/${this.currentTrack.id}/${normalizeTitle(title)}`,this.currentTrack);
 
-/*
-      const newTrackId = e.srcElement.currentSrc.split('/')[5];
-
-     // debugger;
-      // this.currentTrack = this.originalTracks.filter(function(item){
-      //   return  (item.id === newTrackId) ? true : false;
-      // })[0]; 
-
-      this.currentTrack = findTrackInList(newTrackId);
-
-      console.log('currentTrack:', this.currentTrack);
-//  path: '/player/:artistId/:albumId/:trackId/:title',
-
-      let title = this.artist.name + '>' + this.album.title + '>' + this.currentTrack.title;
-
-      goTo(this.$router,`/player/${this.artist.id}/${this.album.id}/${newTrackId}/${normalizeTitle(title)}`,this.currentTrack);
-
-      // OLD goTo(this.$router,`/player/${this.album.id}/${formatSlug(this.album.title)}/track/${newTrackId}`,this.currentTrack);
-
-*/
     },
     findTrackInList(id) {
       if(id === 0 || id ==="0"){

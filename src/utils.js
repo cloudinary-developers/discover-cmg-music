@@ -24,7 +24,7 @@ if(router.currentRoute.name === 'player'){
 console.log('query', query);
   router.push({
     query : query,
-    data : query,
+    props : query,
     path :path
   })
 }
