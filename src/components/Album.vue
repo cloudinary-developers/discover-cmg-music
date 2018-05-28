@@ -3,7 +3,11 @@
        <v-layout row v-if="!noAlbums">
       <v-flex xs12>
         <img class="banner-image" :src="transformArtistBannerImage" :alt="artist.name">
-         <h3 class="banner">{{artist.name}}</h3>
+<!--          <h3 class="banner">{{artist.name}}</h3> --> 
+<div class="banner" >
+   <h1 class="display-3">{{artist.name}}</h1>
+
+</div>        
       </v-flex>
     </v-layout>
 
@@ -32,7 +36,7 @@
         <v-flex xs2>
           <div class="album-artist" v-if="!noAlbums">
             <img :src="transformArtistAvatarImage" :alt="artist.name">
-            <h3>{{artist.name}}</h3>
+             <h1 class="subheading">{{artist.name}}</h1>
           </div>
         </v-flex>
         <v-flex xs1/>
@@ -162,9 +166,8 @@ export default {
 }
 .banner {
     position: absolute;
-    top: 80px;
+    top: 100px;
     left: 300px;
-    font-size: 72px;
     color: #231F20;    
 }
 .banner-image {
