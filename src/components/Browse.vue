@@ -1,5 +1,14 @@
 <template>
  <div>
+   <v-container fluid>
+    <v-layout>
+      <v-flex xs8 offset-xs2>
+            <carousel  v-if="!loading" :items="items" :type="type" :pageSize="pageSize" :totalItems="totalItems" @changePage="changePage($event)"></carousel>         
+      </v-flex>
+    </v-layout>
+    
+  </v-container>
+
     <v-container fluid fill-height>
     <v-layout>
       <v-flex xs8 offset-xs2>
@@ -42,6 +51,7 @@
 
 <script>
 import debounce from 'lodash/debounce';
+import Carousel from './Carousel';
 import BrowseList from './BrowseList';
 import RiseLoader from 'vue-spinner/src/RiseLoader';
 import { API_BASE_URI, ALPHABETS, goTo, fetchFilteredItems } from '../utils';
@@ -86,9 +96,10 @@ export default {
         page,
         pageSize
       );
+     // debugger;
       this.type = 'browse';
-      this.items = data.artists.artist;
-      this.totalItems = data.artists.totalItems;
+      this.items =  data.artists.artist;
+      this.totalItems =  data.artists.totalItems;
       this.page = page;
       this.loading = false;
     },
@@ -113,6 +124,7 @@ export default {
     }
   },
   components: {
+    Carousel,
     BrowseList,
     RiseLoader
   }
